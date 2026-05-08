@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: wjanalytics-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: WJ_DB_PATH
+        value: /opt/render/project/src/wj_saas.db
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false

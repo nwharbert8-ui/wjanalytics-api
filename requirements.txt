@@ -1,0 +1,6 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.0
+numpy>=1.24
+stripe>=8.0
+python-multipart>=0.0.9
