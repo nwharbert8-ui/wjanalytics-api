@@ -351,22 +351,19 @@ async def stripe_webhook(request: Request):
 
     if STRIPE_WEBHOOK_SECRET:
         try:
-            event = stripe.Webhook.construct_event(
-                payload, sig, STRIPE_WEBHOOK_SECRET
-            )
+            stripe.Webhook.construct_event(payload, sig, STRIPE_WEBHOOK_SECRET)
         except Exception as e:
             print(f"[WEBHOOK] signature verification failed: {e}")
             raise HTTPException(400, f"Webhook signature verification failed: {e}")
-    else:
-        # No secret configured — accept the raw event (development only)
-        import json as _json
-        try:
-            event = _json.loads(payload)
-        except Exception as e:
-            print(f"[WEBHOOK] payload parse failed: {e}")
-            return JSONResponse({"received": False, "error": "bad payload"}, status_code=200)
 
-    obj = event.get("data", {}).get("object", {})
+    import json as _json
+    try:
+        event = _json.loads(payload)
+    except Exception as e:
+        print(f"[WEBHOOK] payload parse failed: {e}")
+        return JSONResponse({"received": False, "error": "bad payload"}, status_code=200)
+
+    obj = event.get("data", {}).get("object", {}) or {}
     typ = event.get("type", "")
     print(f"[WEBHOOK] received {typ} | event_id={event.get('id')}")
 
